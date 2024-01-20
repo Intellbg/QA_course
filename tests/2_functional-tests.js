@@ -34,7 +34,7 @@ suite('Functional Tests', function () {
         });
     });
     // #3
-    test('Send {surname: "Colombo", name: "Cristoforo" }', function (done) {
+    test('Send {surname: "Colombo"}', function (done) {
       chai
         .request(server)
         .keepOpen()
@@ -43,7 +43,6 @@ suite('Functional Tests', function () {
         surname: "Colombo", name: "Cristoforo" 
       })
         .end(function (err, res) {
-          console.log(res)
           assert.equal(res.status, 200);
           assert.equal(res.type , 'application/json');
           assert.equal(res.body.name, "Cristoforo");
@@ -53,19 +52,32 @@ suite('Functional Tests', function () {
     });
     // #4
     test('Send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
-      done();
+      chai.request(server)
+        .keepOpen()
+        .put('/travellers')
+        .send({
+        surname: "da Verrazzano",
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          assert.equal(res.type , 'application/json');
+          assert.equal(res.body.name, "Giovanni");
+          assert.equal(res.body.surname , "da Verrazzano");
+          done();
+        })
     });
   });
 });
 
 const Browser = require('zombie');
+Browser.site = 'https://electric-grizzled-doll.glitch.me'; // Your URL here
 
 suite('Functional Tests with Zombie.js', function () {
   this.timeout(5000);
-
-
+  const browser = new Browser();
+  suiteSetup(function(done) {
+    return browser.visit('/', done);
+  });
 
   suite('Headless browser', function () {
     test('should have a working "site" property', function() {
