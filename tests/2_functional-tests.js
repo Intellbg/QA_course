@@ -34,15 +34,20 @@ suite('Functional Tests', function () {
         });
     });
     // #3
-    test('Send {surname: "Colombo"}', function (done) {
+    test('Send {surname: "Colombo", name: "Cristoforo" }', function (done) {
       chai
         .request(server)
         .keepOpen()
         .put('/travellers')
-
+        .send({
+        surname: "Colombo", name: "Cristoforo" 
+      })
         .end(function (err, res) {
-          assert.fail();
-
+          console.log(res)
+          assert.equal(res.status, 200);
+          assert.equal(res.type , 'application/json');
+          assert.equal(res.body.name, "Cristoforo");
+          assert.equal(res.body.surname , "Colombo");
           done();
         });
     });
